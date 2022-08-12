@@ -17,7 +17,7 @@ class ClientRepository implements ClientRepositoryInterface
 
     public function getClientEntity($id)
     {
-        ($this->repository)::get($id);
+        return ($this->repository)::get($id);
     }
 
     public function validateClient($id, $secret, $grantType)
