@@ -28,9 +28,9 @@ class AuthorizationServer
         $accessTokenRepository = new AccessTokenRepository($config->get('oauth-server.repository.access_token'));
 
         $privateKey    = "-----BEGIN RSA PRIVATE KEY-----\n"
-            . wordwrap($config->get('oauth.private_key'), 64, "\n", true)
+            . wordwrap($config->get('oauth-server.private_key'), 64, "\n", true)
             . "\n-----END RSA PRIVATE KEY-----";
-        $encryptionKey = $config->get('oauth.encryption_key');
+        $encryptionKey = $config->get('oauth-server.encryption_key');
 
         $this->server = new \League\OAuth2\Server\AuthorizationServer(
             $clientRepository,
