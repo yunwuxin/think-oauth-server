@@ -1,0 +1,22 @@
+{
+    "name": "yunwuxin/think-oauth-server",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0.1",
+        "topthink/framework": "^6.0",
+        "league/oauth2-server": "^8.3",
+        "guzzlehttp/psr7": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "yunwuxin\\oauth\\server\\": "src/"
+        }
+    },
+    "extra": {
+        "think": {
+            "config": {
+                "oauth-server": "src/config.php"
+            }
+        }
+    }
+}
