@@ -26,8 +26,8 @@ class ResourceServer
     }
 
     /**
-     * @param Request $request
-     * @return \Psr\Http\Message\ServerRequestInterface|\yunwuxin\oauth\server\Request
+     * @param \think\Request $request
+     * @return \Psr\Http\Message\ServerRequestInterface|\yunwuxin\oauth\server\ServerRequest
      */
     public function validateAuthenticatedRequest(Request $request)
     {

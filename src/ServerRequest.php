@@ -2,9 +2,9 @@
 
 namespace yunwuxin\oauth\server;
 
-use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\ServerRequest as Request;
 
-class Request extends ServerRequest
+class ServerRequest extends Request
 {
     public function getClientId()
     {

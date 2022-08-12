@@ -3,12 +3,13 @@
 namespace yunwuxin\oauth\server;
 
 use Psr\Http\Message\ResponseInterface;
+use think\Request;
 
 class Bridge
 {
-    public static function fromThinkRequest(\think\Request $request)
+    public static function fromThinkRequest(Request $request)
     {
-        $serverRequest = new Request(
+        $serverRequest = new ServerRequest(
             $request->method(),
             $request->url(),
             $request->header(),

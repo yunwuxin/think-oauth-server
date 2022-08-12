@@ -7,7 +7,6 @@ use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
-use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use think\Cache;
 use think\Config;
 use think\Request;
@@ -73,7 +72,8 @@ class AuthorizationServer
     {
         $request = Bridge::fromThinkRequest($request);
         try {
-            return $this->server->validateAuthorizationRequest($request);
+            $request = $this->server->validateAuthorizationRequest($request);
+            return new AuthorizationRequest($request);
         } catch (OAuthServerException $exception) {
             throw new \yunwuxin\oauth\server\exception\OAuthServerException($exception);
         }
@@ -81,7 +81,7 @@ class AuthorizationServer
 
     public function completeAuthorizationRequest(AuthorizationRequest $request)
     {
-        $response = $this->server->completeAuthorizationRequest($request, new Response);
+        $response = $this->server->completeAuthorizationRequest($request->getRequest(), new Response);
         return Bridge::toThinkResponse($response);
     }
 
@@ -89,7 +89,8 @@ class AuthorizationServer
     {
         $request = Bridge::fromThinkRequest($request);
         try {
-            $this->server->respondToAccessTokenRequest($request, new Response);
+            $response = $this->server->respondToAccessTokenRequest($request, new Response);
+            return Bridge::toThinkResponse($response);
         } catch (OAuthServerException $exception) {
             throw new \yunwuxin\oauth\server\exception\OAuthServerException($exception);
         }
