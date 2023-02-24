@@ -12,7 +12,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * @param RefreshTokenInterface $repository
      */
-    public function __construct(protected $repository)
+    public function __construct(protected $repository = null)
     {
     }
 
@@ -23,16 +23,23 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-        ($this->repository)::persist($refreshTokenEntity);
+        if ($this->repository) {
+            ($this->repository)::persist($refreshTokenEntity);
+        }
     }
 
     public function revokeRefreshToken($tokenId)
     {
-        ($this->repository)::revoke($tokenId);
+        if ($this->repository) {
+            ($this->repository)::revoke($tokenId);
+        }
     }
 
     public function isRefreshTokenRevoked($tokenId)
     {
-        return ($this->repository)::isRevoked($tokenId);
+        if ($this->repository) {
+            return ($this->repository)::isRevoked($tokenId);
+        }
+        return true;
     }
 }

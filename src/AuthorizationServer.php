@@ -47,7 +47,7 @@ class AuthorizationServer
             $this->server->enableGrantType(
                 new AuthCodeGrant(
                     new AuthCodeRepository($cache),
-                    new RefreshTokenRepository(),
+                    new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token')),
                     new DateInterval('PT10M')
                 )
             );
@@ -67,7 +67,7 @@ class AuthorizationServer
 
         if (in_array('refresh_token', $grunts)) {
             $this->server->enableGrantType(
-                new RefreshTokenGrant(new RefreshTokenRepository())
+                new RefreshTokenGrant(new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token')))
             );
         }
     }
