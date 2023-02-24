@@ -2,12 +2,19 @@
 
 namespace yunwuxin\oauth\server\repositories;
 
-use yunwuxin\oauth\server\entities\RefreshToken;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+use yunwuxin\oauth\server\entities\RefreshToken;
+use yunwuxin\oauth\server\interfaces\RefreshTokenInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
+    /**
+     * @param RefreshTokenInterface $repository
+     */
+    public function __construct(protected $repository)
+    {
+    }
 
     public function getNewRefreshToken()
     {
@@ -16,16 +23,16 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-
+        ($this->repository)::persist($refreshTokenEntity);
     }
 
     public function revokeRefreshToken($tokenId)
     {
-
+        ($this->repository)::revoke($tokenId);
     }
 
     public function isRefreshTokenRevoked($tokenId)
     {
-        return true;
+        return ($this->repository)::isRevoked($tokenId);
     }
 }

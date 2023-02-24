@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use think\Cache;
 use think\Config;
 use think\Request;
@@ -48,22 +49,25 @@ class AuthorizationServer
                     new AuthCodeRepository($cache),
                     new RefreshTokenRepository(),
                     new DateInterval('PT10M')
-                ),
-                new DateInterval('PT12H')
+                )
             );
         }
 
         if (in_array('implicit', $grunts)) {
             $this->server->enableGrantType(
-                new ImplicitGrant(new DateInterval('PT12H')),
-                new DateInterval('PT12H')
+                new ImplicitGrant(new DateInterval('PT12H'))
             );
         }
 
         if (in_array('client_credentials', $grunts)) {
             $this->server->enableGrantType(
-                new ClientCredentialsGrant(),
-                new DateInterval('PT12H')
+                new ClientCredentialsGrant()
+            );
+        }
+
+        if (in_array('refresh_token', $grunts)) {
+            $this->server->enableGrantType(
+                new RefreshTokenGrant(new RefreshTokenRepository())
             );
         }
     }
