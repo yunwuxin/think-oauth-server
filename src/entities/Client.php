@@ -10,19 +10,12 @@ class Client implements ClientEntityInterface
 {
     use EntityTrait, ClientTrait;
 
-    protected $scopes;
-
-    public function __construct($identifier, $name, $redirectUri, $isConfidential = false, $scopes = [])
+    public function __construct($identifier, $name, $redirectUri, $isConfidential = false)
     {
         $this->identifier     = $identifier;
         $this->name           = $name;
         $this->redirectUri    = $redirectUri;
         $this->isConfidential = $isConfidential;
-        $this->scopes         = $scopes;
     }
 
-    public function getScopes()
-    {
-        return $this->scopes;
-    }
 }

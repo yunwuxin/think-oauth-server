@@ -18,7 +18,10 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function getNewRefreshToken()
     {
-        return new RefreshToken();
+        if ($this->repository) {
+            return new RefreshToken();
+        }
+        return null;
     }
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)

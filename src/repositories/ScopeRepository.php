@@ -8,9 +8,19 @@ use yunwuxin\oauth\server\entities\Scope;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
+    /**
+     * @param \yunwuxin\oauth\server\interfaces\ScopeInterface $repository
+     */
+    public function __construct(protected $repository = null)
+    {
+
+    }
 
     public function getScopeEntityByIdentifier($identifier)
     {
+        if ($this->repository) {
+            return ($this->repository)::get($identifier);
+        }
         return new Scope($identifier);
     }
 
@@ -23,8 +33,8 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $client, $userIdentifier = null)
     {
-        if ($grantType == 'client_credentials') {
-            return array_merge($scopes, array_map([$this, 'getScopeEntityByIdentifier'], $client->getScopes()));
+        if ($this->repository) {
+            return ($this->repository)::finalize($scopes, $grantType, $client, $userIdentifier);
         }
         return $scopes;
     }

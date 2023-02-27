@@ -10,6 +10,7 @@ use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use think\Cache;
 use think\Config;
+use think\helper\Arr;
 use think\Request;
 use yunwuxin\oauth\server\grant\AuthCodeGrant;
 use yunwuxin\oauth\server\repositories\AccessTokenRepository;
@@ -25,7 +26,7 @@ class AuthorizationServer
     public function __construct(Config $config, Cache $cache)
     {
         $clientRepository      = new ClientRepository($config->get('oauth-server.repository.client'));
-        $scopeRepository       = new ScopeRepository();
+        $scopeRepository       = new ScopeRepository($config->get('oauth-server.repository.scope'));
         $accessTokenRepository = new AccessTokenRepository($config->get('oauth-server.repository.access_token'));
 
         $privateKey    = "-----BEGIN RSA PRIVATE KEY-----\n"
@@ -43,32 +44,36 @@ class AuthorizationServer
 
         $grunts = $config->get('oauth-server.grunts', []);
 
-        if (in_array('auth_code', $grunts)) {
-            $this->server->enableGrantType(
-                new AuthCodeGrant(
-                    new AuthCodeRepository($cache),
-                    new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token')),
-                    new DateInterval('PT10M')
-                )
-            );
-        }
-
-        if (in_array('implicit', $grunts)) {
-            $this->server->enableGrantType(
-                new ImplicitGrant(new DateInterval('PT12H'))
-            );
-        }
-
-        if (in_array('client_credentials', $grunts)) {
-            $this->server->enableGrantType(
-                new ClientCredentialsGrant()
-            );
-        }
-
-        if (in_array('refresh_token', $grunts)) {
-            $this->server->enableGrantType(
-                new RefreshTokenGrant(new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token')))
-            );
+        foreach ($grunts as $type => $option) {
+            switch ($type) {
+                case 'auth_code':
+                    $this->server->enableGrantType(
+                        new AuthCodeGrant(
+                            new AuthCodeRepository($cache),
+                            new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token')),
+                            new DateInterval('PT10M')
+                        ),
+                        Arr::get($option, 'ttl', new DateInterval('PT1H'))
+                    );
+                    break;
+                case 'implicit':
+                    $this->server->enableGrantType(
+                        new ImplicitGrant(Arr::get($option, 'ttl', new DateInterval('PT12H')))
+                    );
+                    break;
+                case 'client_credentials':
+                    $this->server->enableGrantType(
+                        new ClientCredentialsGrant(),
+                        Arr::get($option, 'ttl', new DateInterval('PT1H'))
+                    );
+                    break;
+                case 'refresh_token':
+                    $this->server->enableGrantType(
+                        new RefreshTokenGrant(new RefreshTokenRepository($config->get('oauth-server.repository.refresh_token'))),
+                        Arr::get($option, 'ttl', new DateInterval('PT1H'))
+                    );
+                    break;
+            }
         }
     }
 
