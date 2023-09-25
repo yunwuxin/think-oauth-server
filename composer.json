@@ -3,7 +3,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.1",
-        "topthink/framework": "^6.0",
+        "topthink/framework": "^6.0|^8.0",
         "league/oauth2-server": "^8.3",
         "guzzlehttp/psr7": "^2.4"
     },
